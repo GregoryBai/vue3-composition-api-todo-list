@@ -1,26 +1,50 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Welcome to Your Vue.js App" />
+  <Header />
+  <main class="wrapper">
+    <Menu @add-todo="submitTodo" />
+    <TodoList :todos="state" @remove-todo="removeTodo" />
+  </main>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
+import TodoList from "./components/TodoList"
+import Header from "./components/Header"
+import Menu from "./components/Menu"
+import { ref, watch } from "vue"
 
 export default {
   name: "App",
+  setup() {
+    const state = ref([])
+
+    watch(state, () => {
+      console.log(state.value)
+    })
+
+    function submitTodo(todo) {
+      state.value.push(todo)
+    }
+
+    const removeTodo = (idx) => {
+      console.log(idx)
+      state.value = state.value.filter((todo, i) => i !== idx)
+    }
+    return { state, submitTodo, removeTodo }
+  },
   components: {
-    HelloWorld
-  }
-};
+    TodoList,
+    Header,
+    Menu,
+  },
+}
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+<style lang="scss">
+@import "./styles/base.scss";
+
+.wrapper {
+  margin: 20px;
+  display: flex;
+  justify-content: space-evenly;
 }
 </style>
